@@ -1,0 +1,63 @@
+#Get all User
+
+GET  http://localhost:9494/api/v1/products HTTP/1.1
+
+###
+
+#Post a new user
+POST http://localhost:9494/api/v1/products HTTP/1.1
+content-type: application/json
+
+{
+  "name": "Máy hút bụi cầm tay Deerma DX118C Pro",
+  "slug": "may-hut-bui-cam-tay-deerma-dx118c-pro", 
+  "supplier": "656a0f0600d2b32aa0693b80", 
+  "category": "656894b7c94df3a50a2a8e53", 
+  "price": 100, 
+  "meteTitle": "Mô tả ngắn", 
+  "meteDescription": "Mô tả chi tiết", 
+  "content": "Nội dung sản phẩm", 
+  "rating": 4, 
+  "reviews": [
+    {
+      "rating": 5,
+      "comment": "Bình luận 1",
+      "customerId": "656db1879b6e79d96e994777"
+    },
+    {
+      "rating": 4,
+      "comment": "Bình luận 2",
+      "customerId": "656db3759171a0d052185716"
+    }
+  ],
+  "thumbnail": "may-hut-bui-cam-tay-deerma-dx118c-pro.jpg",
+  "images": [
+    {
+      "url": "may-hut-bui-cam-tay-deerma-dx118c-pro.jpg",
+      "alt": "Mô tả hình ảnh 1",
+      "caption": "Chú thích hình ảnh 1",
+      "position": 0
+    },
+    {
+      "url": "may-hut-bui-cam-tay-deerma-dx118c-pro.jpg",
+      "alt": "Mô tả hình ảnh 2",
+      "caption": "Chú thích hình ảnh 2",
+      "position": 1
+    }
+  ],
+  "stock": 10,
+  "discount": 10
+}
+
+
+###
+DELETE   http://localhost:9494/api/v1/products/6526a2b12a45dcd30e7a0bf7 HTTP/1.1
+
+
+###
+PATCH  http://localhost:9494/api/v1/products/2 HTTP/1.1
+content-type: application/json
+
+{
+    "description": "dây điện: 3.7m,Công suất hút: 12000 Pa"
+}
