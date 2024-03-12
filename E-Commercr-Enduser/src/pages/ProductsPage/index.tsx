@@ -13,23 +13,14 @@ import { IProduct } from "../ProductDetailsPage";
 const ProductsPage = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [categories, setCategories] = useState([]);
+
   const [checked, setChecked] = useState<string[]>([]);
-  const [radio, setRadio] = useState([]);
+
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { addItem } = useCartStore();
 
-  // const getCategory = async () => {
-  //   try {
-  //     const res = await fetch ( config.urlAPI+'/v1/categories');
-  //     const data = await res.json();
-  //     console.log(data?.data.data.categories)
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const getCategory = async () => {
    
@@ -49,26 +40,21 @@ const ProductsPage = () => {
 
   })
 
-  // const getProducts = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const { data } = await axios.get(config.urlAPI+`/v1/products/product-list/${page}`);
-  //     setLoading(false);
-  //     setProducts(data.products);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log(error);
-  //   }
-  // };
-  const getProducts = async ()=> {
-    return axios.get(config.urlAPI+`/v1/products/product-list/${page}`);
+
+  const [params] = useSearchParams();
+
+  
+
+  const page = params.get('page');
+  const int_page = page? parseInt(page) : 1;
+  const getProducts = async (page=1)=> {
+    return axios.get(config.urlAPI+`/v1/products?page=${page}`);
   }
-  const params = useParams();
-  // const page = params.page ? parseInt(params.page) : 1;
-   // Queries
+  
+ 
    const queryProducts = useQuery({ 
-    queryKey: ['products', page],
-    queryFn: ()=>getProducts(),
+    queryKey: ['products', int_page],
+    queryFn: ()=> getProducts(int_page),
     onSuccess: (data)=>{
       //Thành công thì trả lại data
       console.log(data.data.data.products);
@@ -78,15 +64,7 @@ const ProductsPage = () => {
     },
 
   })
-  // const [product, setProduct] = React.useState(null);
-  // React.useEffect(()=>{
-  //     const fetchData = async () =>{
-  //         const res = await fetch ( config.urlAPI+'/v1/products/product-list/${page}');
-  //         const data = await res.json();
-  //         console.log(data.data)
-  //     }
-  //     fetchData();
-  // },[])
+
   // const getTotal = async () => {
   //   try {
   //     const { data } = await axios.get(config.urlAPI+"/v1/products/product-count");
@@ -96,26 +74,27 @@ const ProductsPage = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   getCategory();
-  //   getProducts();
-  //   getTotal();
-  // }, []);
   useEffect(() => {
-    if (page === 1) return;
-    loadMore();
-  }, [page]);
-  const loadMore = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(config.urlAPI+`/v1/products/product-list/${page}`);
-      setLoading(false);
-      setProducts([...products, ...data?.products]);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+    getCategory();
+    getProducts();
+    //getTotal();
+  }, []);
+
+  // useEffect(() => {
+  //   if (page = 1) return;
+  //   loadMore();
+  // }, [page]);
+  // const loadMore = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const { data } = await axios.get(config.urlAPI+`/v1/products?page=${page}`);
+  //     setLoading(false);
+  //     setProducts([...products, ...data?.products]);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
 
 
 
@@ -129,6 +108,17 @@ const ProductsPage = () => {
     setChecked(all);
   };
 
+  useEffect(() => {
+    if (checked.length) {
+      filterProduct();
+    } else {
+      getProducts();
+    }
+  }, [checked]);
+  useEffect(() => {
+    if (checked.length) filterProduct();
+  },[checked]);
+
   const filterProduct = async () => {
     try {
       const { data } = await axios.post(config.urlAPI+"/v1/products/product-filters", { checked });
@@ -138,14 +128,7 @@ const ProductsPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (checked.length) {
-      filterProduct();
-    } else {
-      getProducts();
-    }
-  }, [checked]);
-
+  
   // Handle lỗi khi ko fetch được API
   // if(queryProducts.isError){
   //   return (
@@ -177,10 +160,10 @@ const ProductsPage = () => {
                   {
                      queryCategorys.data && queryCategorys.data.data.data.categories ? queryCategorys.data.data.data.categories.map((c: any) => {
                       return (
-                        <label key={c._id}>
-                        <input type="checkbox" onChange={(e) => handleFilter(e.target.checked, c._id)} />
+                      <div className="flex">
+                         <input key={c._id} type="checkbox" onChange={(e) => handleFilter(e.target.checked, c._id)} />
                         {c.name}
-                      </label>
+                      </div>
                       )
                       }):null
                   }
@@ -243,6 +226,7 @@ const ProductsPage = () => {
                 </div>
               </div>
               <div className="flex flex-wrap mb-20">
+                {JSON.stringify(checked, null, 4)}
                 {
                   
                    

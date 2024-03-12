@@ -10,7 +10,7 @@ import productsValidation from '../../validations/product.validation';
 const router = express.Router();
 
 //Get All products from DB
-router.get('/', productsController.getProductController);
+router.get('/', productsController.getAll);
 
 // router.get('/', (req, res) => {
 //     const { category, currentPage, pageSize } = req.query;
@@ -25,7 +25,7 @@ router.get('/:id', productsController.getItemById);
 
 router.get("/product-category/:slug", productsController.getProductCategory);
  
-router.post("/product-filters", productsController.productFiltersController);
+router.get("/product-filters", productsController.productFiltersController);
 router.get("/product-count", productsController.productCountController);
 router.get("/product-list/:page", productsController.productListController);
 

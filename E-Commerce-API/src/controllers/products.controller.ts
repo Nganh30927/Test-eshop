@@ -10,7 +10,7 @@ import { IProduct } from '../types/model';
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = req.query.page  ? parseInt(req.query.page as string) : 1;
-    const limit = req.query.limit  ? parseInt(req.query.limit as string) : 12; // 10 item trên 1 limit
+    const limit = req.query.limit  ? parseInt(req.query.limit as string) : 6; // 10 item trên 1 limit
     const category = req.query.category as string;
     const products = await productsService.getAllItems(category,page,limit);
     // check số lượng sản phẩm hiện thị trên 1 page.
@@ -66,7 +66,9 @@ const productFiltersController = async (req: Request, res: Response, next: NextF
     const {checked, radio} = req.body;
     let args: Partial<IProduct> = {};
     
-    if (checked.length > 0) args.category = checked;
+    if (checked && checked.length > 0) {
+      args.category = { $in: checked };
+    }
     const products = await Product.find(args);
     sendJsonSuccess(res)(products);
   }catch (error) {

@@ -24,12 +24,11 @@ export interface ICategory {
     discount: number;
     stock: number;
     description: string;
-    category: ObjectId;
+    category: ObjectId | { $in: ObjectId[] };
     supplier: ObjectId;
     slug: string;
     thumbnail: string
   }
-
   export interface IEmployee {
     _id?: ObjectId;
     firstName: string;
